@@ -5,7 +5,7 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import { client } from '../client';
+import { client, errorHandle } from '../client';
 import { isTokenValid } from '../helper';
 
 import { useStyle } from './SignForm';
@@ -51,12 +51,7 @@ const Login = () => {
       .then(response => {
         auth(response.data);
       }).catch(error => {
-        const data = error.response.data;
-        if (data.hasOwnProperty('errors')) {
-          snackbar.enqueueSnackbar(data.message, {
-            variant: 'error',
-          });
-        }
+        errorHandle(error, snackbar);
     })
   };
 
