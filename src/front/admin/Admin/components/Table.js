@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Grid,
@@ -8,12 +8,18 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  Link,
+  CircularProgress,
 } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import FetchingButton from '../../../components/FetchingButton';
+import { Link as RouteLink } from 'react-router-dom';
 import { Pagination } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/styles';
+import { useSnackbar } from 'notistack';
+import TableFetching from './TableFetching';
+import TableEmpty from './TempleEmpty';
+import FetchingButton from '../../../components/FetchingButton';
+import { client, errorHandle } from '../../../client';
 
 const useStyle = makeStyles(theme => ({
   pagination: {
@@ -34,18 +40,62 @@ const useStyle = makeStyles(theme => ({
   },
 }));
 
-const Table = ({addButton, link}) => {
+const Table = ({addButton, link, array}) => {
   const classes = useStyle();
+  const snackbar = useSnackbar();
   const [page, setPage] = useState(1);
+  const [request, setRequest] = useState(true);
+  const [requestIndex, setRequestIndex] = useState(false);
+  const [state, setState] = useState({
+    [array]: [],
+    total: 0,
+  });
+
+  const fetchData = () => {
+    client.get(`/${link}`)
+      .then(response => {
+        const data = response.data[array];
+        const total = response.data.total;
+        state[array] = data;
+        state.total = total;
+        setState({ ...state });
+        setRequest(false);
+      }).catch(error => {
+      errorHandle(error, snackbar);
+    });
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const changePage = (event, page) => {
     setPage(page);
   };
 
+  const deleteItem = (event, index) => {
+    setRequestIndex(index);
+    const item = state[array][index];
+    client.delete(`/${link}`, {
+      params: {
+        id: index,
+      },
+    }).then(() => {
+      setRequestIndex(false);
+      fetchData();
+      snackbar.enqueueSnackbar(`${item.title} has benn deleted`, {
+        variant: 'success',
+      });
+    }).catch(error => {
+      setRequestIndex(false);
+      errorHandle(error);
+    })
+  };
+
   return (
     <React.Fragment>
       <Button
-        component={Link}
+        component={RouteLink}
         variant='contained'
         color='primary'
         to={`/admin/${link}/new`}
@@ -62,29 +112,57 @@ const Table = ({addButton, link}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {[0,1,2,3,4].map((item) => (
-              <TableRow key={item}>
-                <TableCell className={classes.name} scope="row">Lorem ipsum</TableCell>
-                <TableCell align="right">
-                  <Grid className={classes.actionsWrapper}>
-                    <Button component={Link} to={`/admin/${link}/id`}>Edit</Button>
-                    <FetchingButton color='secondary'>Delete</FetchingButton>
-                  </Grid>
-                </TableCell>
-              </TableRow>
-            ))}
+            {request
+              ? <TableFetching name={classes.name} actionsWrapper={classes.actionsWrapper}/>
+              : (
+                state[array].length > 0
+                  ? (
+                    state[array].map((item, index) => (
+                      <TableRow key={index}>
+                        <TableCell className={classes.name} scope="row">
+                          <Link component={RouteLink} to={`/${link}/${index}`}>{item.title}</Link>
+                        </TableCell>
+                        <TableCell align="right">
+                          <Grid className={classes.actionsWrapper}>
+                            <Button
+                              disabled={request || requestIndex === index}
+                              component={RouteLink}
+                              to={`/admin/${link}/${index}`}
+                            >
+                              Edit
+                            </Button>
+                            <FetchingButton
+                              color='secondary'
+                              disabled={request}
+                              fallback={<CircularProgress color='secondary' size={21}/>}
+                              fetching={requestIndex === index}
+                              onClick={event => deleteItem(event, index)}
+                            >
+                              Delete
+                            </FetchingButton>
+                          </Grid>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableEmpty/>
+                  )
+              )}
           </TableBody>
         </List>
       </TableContainer>
-      <Pagination
-        count={11}
-        defaultPage={6}
-        siblingCount={1}
-        boundaryCount={2}
-        className={classes.pagination}
-        onChange={changePage}
-        page={page}
-      />
+      {state.total > 1
+      && (
+        <Pagination
+          count={state.total}
+          defaultPage={6}
+          siblingCount={1}
+          boundaryCount={2}
+          className={classes.pagination}
+          onChange={changePage}
+          page={page}
+        />
+      )}
     </React.Fragment>
   );
 };

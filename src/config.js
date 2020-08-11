@@ -1,4 +1,7 @@
 const user = require('./validation_config/user');
+const product = require('./validation_config/product');
+const article = require('./validation_config/article');
+const imagePost = require('./validation_config/imagePost');
 
 const config = {
   baseUrl: 'http://localhost',
@@ -6,6 +9,9 @@ const config = {
 
   validation: {
     user,
+    product,
+    article,
+    imagePost,
   }
 }
 

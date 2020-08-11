@@ -21,12 +21,14 @@ const Admin = () => {
           <Table
             addButton='+Article'
             link='article'
+            array='articles'
           />
         </Grid>
         <Grid item xs={12} sm={6} className={classes.tableWrapper}>
           <Table
             addButton='+Product'
             link='product'
+            array='products'
           />
         </Grid>
       </Grid>

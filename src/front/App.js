@@ -8,7 +8,7 @@ const theme = createMuiTheme({});
 
 const App = () => (
   <MuiThemeProvider theme={theme}>
-    <SnackbarProvider maxSnack={3}>
+    <SnackbarProvider autoHideDuration={8000} maxSnack={3}>
       <BrowserRouter>
         <Routes/>
       </BrowserRouter>

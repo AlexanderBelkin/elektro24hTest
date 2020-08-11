@@ -7,6 +7,8 @@ const cors = require('cors');
 
 require('dotenv').config({path: __dirname + '/.env'})
 
+app.use('/uploads', express.static('uploads'))
+
 const whitelist = [
   'http://localhost:3000',
 ];

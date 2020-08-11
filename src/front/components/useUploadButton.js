@@ -1,14 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, IconButton } from '@material-ui/core';
 import { Image, Close } from '@material-ui/icons';
 import { useSnackbar } from 'notistack';
+import { makeStyles } from '@material-ui/styles';
+import { isEmpty } from 'lodash';
+import config from '../../config';
 
-function useUploadButton({preview, previewImg, input, button, closeButton}) {
-  const maxFiles = 3;
-  const maxFileSize = 3 * 1024 * 1024; // 3Mb
+const useStyles = makeStyles(theme => ({
+  preview: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '5px',
+    '& > div': {
+      position: 'relative',
+    },
+  },
+  previewImg: {
+    width: 64,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+  },
+}));
+
+function useUploadButton({images}) {
+  const maxFiles = config.validation.imagePost.count;
+  const maxFileSize = config.validation.imagePost.size;
   const snackbar = useSnackbar();
-  const [files, setFiles] = useState([]);
+  const classes = useStyles();
   const isLimitFiles = files => files.length > maxFiles;
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [files, setFiles] = useState([]);
+
+  useEffect(() => {
+    setIsEditMode(!isEmpty(images));
+  }, [images]);
+
+  useEffect(() => {
+    if (isEditMode) {
+      setFiles(images);
+    }
+  }, [isEditMode]);
 
   const isLimitFileSize = files => Boolean(files.find(file => file.size > maxFileSize));
 
@@ -35,21 +69,22 @@ function useUploadButton({preview, previewImg, input, button, closeButton}) {
   return {
     preview: (
       files.length > 0 && (
-        <div className={preview}>
+        <div className={classes.preview}>
           {files.map((file, index) => (
             <div key={index}>
               <IconButton
                 size='small'
                 color='secondary'
-                className={closeButton}
+                className={classes.closeButton}
                 onClick={event => handleDeleteFile(event, index)}
               >
                 <Close/>
               </IconButton>
               <img
                 key={index}
-                className={previewImg}
-                src={URL.createObjectURL(file)}
+                className={classes.previewImg}
+                src={isEditMode ? file : URL.createObjectURL(file)}
+                alt={file.name}
               />
             </div>
           ))}
@@ -61,7 +96,6 @@ function useUploadButton({preview, previewImg, input, button, closeButton}) {
         <input
           onChange={onImageUploaded}
           accept='image/*'
-          className={input}
           style={{ display: 'none' }}
           id='raised-button-file'
           multiple
@@ -74,7 +108,6 @@ function useUploadButton({preview, previewImg, input, button, closeButton}) {
             variant='contained'
             component='span'
             startIcon={<Image/>}
-            className={button}
           >
             Upload images
           </Button>
