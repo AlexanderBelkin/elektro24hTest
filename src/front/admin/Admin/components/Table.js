@@ -18,7 +18,7 @@ import { makeStyles } from '@material-ui/styles';
 import { useSnackbar } from 'notistack';
 import TableFetching from './TableFetching';
 import TableEmpty from './TempleEmpty';
-import FetchingButton from '../../../components/FetchingButton';
+import FetchingButton from '../../../commonComponents/FetchingButton';
 import { client, errorHandle } from '../../../client';
 
 const useStyle = makeStyles(theme => ({
@@ -40,23 +40,27 @@ const useStyle = makeStyles(theme => ({
   },
 }));
 
-const Table = ({addButton, link, array}) => {
+const Table = ({addButton, link}) => {
   const classes = useStyle();
   const snackbar = useSnackbar();
   const [page, setPage] = useState(1);
-  const [request, setRequest] = useState(true);
+  const [request, setRequest] = useState(false);
   const [requestIndex, setRequestIndex] = useState(false);
   const [state, setState] = useState({
-    [array]: [],
+    posts: [],
     total: 0,
   });
 
-  const fetchData = () => {
-    client.get(`/${link}`)
+  const fetchData = page => {
+    client.get(`/${link}`, {
+      params: {
+        page: page || 1,
+      },
+    })
       .then(response => {
-        const data = response.data[array];
+        const data = response.data.posts;
         const total = response.data.total;
-        state[array] = data;
+        state.posts = data;
         state.total = total;
         setState({ ...state });
         setRequest(false);
@@ -66,8 +70,9 @@ const Table = ({addButton, link, array}) => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    setRequest(true);
+    fetchData(page);
+  }, [page]);
 
   const changePage = (event, page) => {
     setPage(page);
@@ -75,7 +80,7 @@ const Table = ({addButton, link, array}) => {
 
   const deleteItem = (event, index) => {
     setRequestIndex(index);
-    const item = state[array][index];
+    const item = state.posts[index];
     client.delete(`/${link}`, {
       params: {
         id: index,
@@ -115,9 +120,9 @@ const Table = ({addButton, link, array}) => {
             {request
               ? <TableFetching name={classes.name} actionsWrapper={classes.actionsWrapper}/>
               : (
-                state[array].length > 0
+                state.posts.length > 0
                   ? (
-                    state[array].map((item, index) => (
+                    state.posts.map((item, index) => (
                       <TableRow key={index}>
                         <TableCell className={classes.name} scope="row">
                           <Link component={RouteLink} to={`/${link}/${index}`}>{item.title}</Link>
@@ -155,7 +160,6 @@ const Table = ({addButton, link, array}) => {
       && (
         <Pagination
           count={state.total}
-          defaultPage={6}
           siblingCount={1}
           boundaryCount={2}
           className={classes.pagination}

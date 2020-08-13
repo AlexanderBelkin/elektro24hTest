@@ -1,9 +1,7 @@
 import React from 'react';
-import PublishForm from '../../components/PublishForm';
+import PublishForm from '../../commonComponents/PublishForm';
 import Fields from './components/Fields';
 
-const NewArticle = () => (
+export const NewArticle = () => (
   <PublishForm Fields={Fields} link='article'/>
 );
-
-export default NewArticle;

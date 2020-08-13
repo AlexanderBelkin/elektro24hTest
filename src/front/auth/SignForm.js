@@ -33,11 +33,14 @@ export const useStyle = makeStyles(theme => ({
     width: '100%',
     marginTop: theme.spacing(1),
   },
-  submit: {
-    margin: theme.spacing(2, 0, 2),
+  fields: {
+    marginBottom: theme.spacing(2)
   },
   heart: {
     color: 'red'
+  },
+  title: {
+    marginBottom: theme.spacing(2)
   },
 }));
 
@@ -50,7 +53,7 @@ const SignForm = ({children}) => {
         <Avatar className={classes.avatar}>
           <LockOutlined/>
         </Avatar>
-        <Typography component="h1" variant="h5">
+        <Typography className={classes.title} component="h1" variant="h5">
           Sign in to start
         </Typography>
         {children}

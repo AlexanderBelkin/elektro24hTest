@@ -14,21 +14,17 @@
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.19",
     "notistack": "^0.9.17",
-    "password-validator": "^5.0.3",
     "react": "^16.13.1",
-    "react-color": "^2.18.1",
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.3.1",
-    "react-material-ui-form-validator": "^2.1.1",
-    "react-number-format": "^4.4.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1"
+    "react-scripts": "^3.4.3"
   },
   "engines": {
     "node": ">=14.4.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "front": "react-scripts start",
     "serve": "npm run start --prefix src/server",
     "build": "react-scripts build",
     "test": "react-scripts test",

@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import { Redirect, useHistory } from 'react-router-dom';
 import {
   CircularProgress,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  OutlinedInput,
 } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
+import { Controller, useForm } from 'react-hook-form';
 import { client, errorHandle } from '../client';
 import { isTokenValid } from '../helper';
 
 import { useStyle } from './SignForm';
-import FetchingButton from '../components/FetchingButton';
+import FetchingButton from '../commonComponents/FetchingButton';
 import SignForm from './SignForm';
 import config from '../../config';
 
@@ -17,12 +21,8 @@ const Login = () => {
   const classes = useStyle();
   const snackbar = useSnackbar();
   const history = useHistory();
+  const { control, errors, handleSubmit } = useForm()
   const [redirect, setRedirect] = useState(false);
-  const [form, setForm] = useState({
-    username: '',
-    password: '',
-  });
-
   const [request, setRequest] = useState(false);
 
   useEffect(() => {
@@ -46,8 +46,8 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = () => {
-    client.post('/auth/login', form)
+  const onSubmit = values => {
+    client.post('/auth/login', values)
       .then(response => {
         auth(response.data);
       }).catch(error => {
@@ -55,73 +55,81 @@ const Login = () => {
     })
   };
 
-  const handleChange = event => {
-    setForm({
-      ...form,
-      [event.target.name]: event.target.value,
-    })
-  };
-
   return (
     <SignForm>
-      <ValidatorForm onSubmit={handleSubmit} className={classes.form}>
-        <TextValidator
-          variant='outlined'
-          margin='normal'
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FormControl
           fullWidth
-          id='username'
-          label='Username'
-          name='username'
-          autoFocus
-          value={form.username}
-          onChange={handleChange}
-          validators={[
-            'required',
-            `minStringLength:${config.validation.user.username.min}`,
-            `maxStringLength:${config.validation.user.username.max}`,
-          ]}
-          errorMessages={[
-            'Field is required',
-            `Min ${config.validation.user.username.min} chars`,
-            `Max ${config.validation.user.username.max} chars`,
-          ]}
-        />
-        <TextValidator
           variant='outlined'
-          margin='normal'
+          className={classes.fields}
+          error={Boolean(errors.username)}
+        >
+          <InputLabel>Username</InputLabel>
+          <Controller
+            fullWidth
+            name='username'
+            type='text'
+            variant='outlined'
+            label='Username'
+            defaultValue=''
+            control={control}
+            as={OutlinedInput}
+            rules={{
+              required: 'This field is required',
+              minLength : {
+                value: config.validation.user.username.min,
+                message: `Min length: ${config.validation.user.username.min} chars`
+              },
+              maxLength: {
+                value: config.validation.user.username.max,
+                message: `Min length: ${config.validation.user.username.max} chars`
+              },
+            }}
+          />
+          {errors.username && <FormHelperText>{errors.username.message}</FormHelperText>}
+        </FormControl>
+        <FormControl
           fullWidth
-          name='password'
-          label='Password'
-          type='password'
-          id='password'
-          value={form.password}
-          onChange={handleChange}
-          validators={[
-            'required',
-            `minStringLength:${config.validation.user.password.min}`,
-            `maxStringLength:${config.validation.user.password.max}`,
-          ]}
-          errorMessages={[
-            'Field is required',
-            `Min ${config.validation.user.password.min} chars`,
-            `Max ${config.validation.user.password.max} chars`,
-          ]}
-        />
+          variant='outlined'
+          className={classes.fields}
+          error={Boolean(errors.password)}
+        >
+          <InputLabel>Password</InputLabel>
+          <Controller
+            fullWidth
+            name='password'
+            type='password'
+            variant='outlined'
+            label='Password'
+            defaultValue=''
+            control={control}
+            as={OutlinedInput}
+            rules={{
+              required: 'This field is required',
+              minLength : {
+                value: config.validation.user.password.min,
+                message: `Min length: ${config.validation.user.password.min} chars`
+              },
+              maxLength: {
+                value: config.validation.user.password.max,
+                message: `Min length: ${config.validation.user.password.max} chars`
+              },
+            }}
+          />
+          {errors.password && <FormHelperText>{errors.password.message}</FormHelperText>}
+        </FormControl>
         <FetchingButton
           type='submit'
           fullWidth
           variant='contained'
           color='primary'
-          className={classes.submit}
           fetching={request}
           fallback={<CircularProgress size={25}/>}
         >
           Sign In
         </FetchingButton>
-      </ValidatorForm>
-      {
-        redirect && <Redirect to='/admin'/>
-      }
+      </form>
+      {redirect && <Redirect to='/admin'/>}
     </SignForm>
   )
 }
