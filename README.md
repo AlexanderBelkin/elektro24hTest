@@ -14,5 +14,6 @@
 `npm run build` - build React app
 
 ## Test user
+url: `/admin`  
 username: `shikachi`  
 password: `TqSqDiDur9bFz5a` 
