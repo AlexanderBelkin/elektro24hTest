@@ -15,14 +15,14 @@ const Routes = () => (
   <React.Suspense fallback={<Suspense/>}>
     <Switch>
       <Route path='/404' component={NotFound} />
-      <PrivateRoute exact path='/admin' component={Admin} />
+      <Route exact path='/' component={MainController} />
+      <Route path='/login' component={Login} />
       <PrivateRoute exact path='/admin/product/new' component={NewProduct} />
       <PrivateRoute exact path='/admin/article/new' component={NewArticle} />
       <PrivateRoute exact path='/admin/product/:id' component={NewProduct} />
       <PrivateRoute exact path='/admin/article/:id' component={NewArticle} />
-      <Route exact path='/' component={MainController} />
-      <Route path='/:page' component={MainController} />
-      <Route path='/login' component={Login} />
+      <PrivateRoute exact path='/admin' component={Admin} />
+      <Route exact path='/:page' component={MainController} />
     </Switch>
   </React.Suspense>
 );
