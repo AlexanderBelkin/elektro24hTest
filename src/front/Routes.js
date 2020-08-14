@@ -14,8 +14,8 @@ const MainController = lazy(() => import('./main/MainController'));
 const Routes = () => (
   <React.Suspense fallback={<Suspense/>}>
     <Switch>
-      <Route path='/404' component={NotFound} />
       <Route exact path='/' component={MainController} />
+      <Route path='/404' component={NotFound} />
       <Route path='/login' component={Login} />
       <PrivateRoute exact path='/admin/product/new' component={NewProduct} />
       <PrivateRoute exact path='/admin/article/new' component={NewArticle} />
