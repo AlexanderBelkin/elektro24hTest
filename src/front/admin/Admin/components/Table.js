@@ -42,9 +42,9 @@ const useStyle = makeStyles(theme => ({
 
 const Table = ({addButton, link}) => {
   const classes = useStyle();
-  const snackbar = useSnackbar();
   const [page, setPage] = useState(1);
   const [request, setRequest] = useState(false);
+  const snackbar = useSnackbar();
   const [requestIndex, setRequestIndex] = useState(false);
   const [state, setState] = useState({
     posts: [],

@@ -1,0 +1,13 @@
+{
+  "presets": ["es2015"],
+  "plugins": [
+    "transform-class-properties",
+    "transform-react-jsx",
+    "transform-object-rest-spread",
+    "@babel/plugin-proposal-export-default-from",
+    ["module-resolver", {
+      "root": ["./src/front"]
+      }],
+      ["import-rename", {"^(.*)\\.jsx$": "$1"}]
+    ]
+  }

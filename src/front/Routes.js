@@ -2,6 +2,7 @@ import React, { lazy} from 'react';
 import { Switch, Route, withRouter } from 'react-router-dom';
 import PrivateRoute from './PrivateRoute';
 import Suspense from './commonComponents/Suspense';
+import AdminPage from './admin/AdminPage';
 
 //routes
 import Login from './auth/Login';
@@ -17,11 +18,12 @@ const Routes = () => (
       <Route exact path='/' component={MainController} />
       <Route path='/404' component={NotFound} />
       <Route path='/login' component={Login} />
-      <PrivateRoute exact path='/admin/product/new' component={NewProduct} />
+      <PrivateRoute path='/admin' component={AdminPage} />
+      {/* <PrivateRoute exact path='/admin/product/new' component={NewProduct} />
       <PrivateRoute exact path='/admin/article/new' component={NewArticle} />
       <PrivateRoute exact path='/admin/product/:id' component={NewProduct} />
-      <PrivateRoute exact path='/admin/article/:id' component={NewArticle} />
-      <PrivateRoute exact path='/admin' component={Admin} />
+      <PrivateRoute exact path='/admin/article/:id' component={NewArticle} /> */}
+      {/* <PrivateRoute exact path='/admin' component={Admin} /> */}
       <Route exact path='/:page' component={MainController} />
     </Switch>
   </React.Suspense>

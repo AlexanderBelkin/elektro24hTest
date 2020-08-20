@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const PublishForm = ({Fields, link}) => {
+const PublishForm = ({Fields, link, onClose}) => {
   const classes = useStyles();
   const snackbar = useSnackbar();
   const history = useHistory();
@@ -91,7 +91,7 @@ const PublishForm = ({Fields, link}) => {
         snackbar.enqueueSnackbar(`${values.title} has been published`, {
           variant: 'success',
         });
-        history.push('/admin');
+        history.go(0);
       }).catch(error => {
         errorHandle(error, snackbar);
       })
@@ -113,7 +113,7 @@ const PublishForm = ({Fields, link}) => {
           </Grid>
           <Fields classes={classes} state={state} request={request} errors={errors} control={control}/>
           <Grid container justify='space-between'>
-            <Button component={Link} to='/admin'>Back</Button>
+            <Button onClick={onClose}>Back</Button>
             <FetchingButton
               type='submit'
               variant='outlined'
