@@ -5,7 +5,6 @@ import {
   Tabs,
   Tab,
   Button,
-  Grid,
   Box
 } from "@material-ui/core";
 import {
@@ -123,21 +122,5 @@ const MainController = () => {
     </Container>
   );
 };
-
-// <div role='tabpanel' hidden={tab !== 0} className={classes.tabWrapper}>
-// {tab === 0 && <About/> }
-// </div>
-// <div role='tabpanel' hidden={tab !== 1} className={classes.tabWrapper}>
-// {tab === 1 && <PostWrapper Post={News} postType='article'/>}
-// </div>
-// <div role='tabpanel' hidden={tab !== 2} className={classes.tabWrapper}>
-// {tab === 2 && <PostWrapper Post={Products} postType='product'/>}
-// </div>
-// <div role='tabpanel' hidden={tab !== 3} className={classes.tabWrapper}>
-// <Service/>
-// </div>
-// <div role='tabpanel' hidden={tab !== 4} className={classes.tabWrapper}>
-// <Contacts/>
-// </div>
 
 export default MainController;

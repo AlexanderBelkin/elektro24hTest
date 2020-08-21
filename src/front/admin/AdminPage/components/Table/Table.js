@@ -72,7 +72,6 @@ export default function CustomTable(props) {
       { state.posts.length?  <TableBody>
           {state.posts.map((prop, key) => {
             const keyList = Object.keys(prop)
-            console.log(keyList);
             return (
               <TableRow key={key} className={classes.tableBodyRow}>
                 {keyList.map((keyName, key) => {
@@ -106,7 +105,6 @@ CustomTable.propTypes = {
     "gray"
   ]),
   tableHead: PropTypes.arrayOf(PropTypes.string),
-  // tableData: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
   itemName:  PropTypes.string,
   link: PropTypes.string,
   onNewItem: PropTypes.func

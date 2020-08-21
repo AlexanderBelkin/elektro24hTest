@@ -7,9 +7,6 @@ import AdminPage from './admin/AdminPage';
 //routes
 import Login from './auth/Login';
 import NotFound from './errors/NotFound';
-const Admin = lazy(() => import('./admin/Admin').then(module => ({ default: module.Admin })));
-const NewProduct = lazy(() => import('./admin/NewProduct').then(module => ({ default: module.NewProduct })));
-const NewArticle = lazy(() => import('./admin/NewArticle').then(module => ({ default: module.NewArticle })));
 const MainController = lazy(() => import('./main/MainController'));
 
 const Routes = () => (
@@ -19,11 +16,6 @@ const Routes = () => (
       <Route path='/404' component={NotFound} />
       <Route path='/login' component={Login} />
       <PrivateRoute path='/admin' component={AdminPage} />
-      {/* <PrivateRoute exact path='/admin/product/new' component={NewProduct} />
-      <PrivateRoute exact path='/admin/article/new' component={NewArticle} />
-      <PrivateRoute exact path='/admin/product/:id' component={NewProduct} />
-      <PrivateRoute exact path='/admin/article/:id' component={NewArticle} /> */}
-      {/* <PrivateRoute exact path='/admin' component={Admin} /> */}
       <Route exact path='/:page' component={MainController} />
     </Switch>
   </React.Suspense>
